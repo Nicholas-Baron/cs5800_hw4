@@ -1,25 +1,25 @@
 package model.dataccess;
 
+import model.entities.User;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import model.entities.User;
-
 public class LoginDataAccess {
 
-    public Boolean verifyCredentials(User user) throws ClassNotFoundException, SQLException {
+    private static final String URL = "jdbc:postgresql://localhost:5432/authentication";
+    private static final String USER = "postgres";
+    private static final String PWD = "123";
 
-        final String URL = "jdbc:postgresql://localhost:5432/authentication";
+    private static final ConnectionFactory connectionFactory = new ConnectionFactory(
+        URL, USER, PWD
+    );
 
-        final String USER = "postgres";
+    public Boolean verifyCredentials(User user) throws SQLException, ClassNotFoundException {
 
-        final String PWD = "123";
-
-        Class.forName("org.postgresql.Driver");
-        Connection connection = DriverManager.getConnection(URL, USER, PWD);
+        Connection connection = connectionFactory.makeConnection();
 
         final PreparedStatement stmt = connection.prepareStatement(
             "SELECT * FROM users WHERE username=? and password=?");

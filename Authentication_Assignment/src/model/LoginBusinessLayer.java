@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 public class LoginBusinessLayer {
 
+    private static final LoginDataAccess loginDataAccess = new LoginDataAccess();
+
     public static void loginUser(String userName, String password)
         throws SQLException, ClassNotFoundException {
 
@@ -19,7 +21,7 @@ public class LoginBusinessLayer {
 
         User user = new User(userName, password);
 
-        if (!(new LoginDataAccess().verifyCredentials(user))) {
+        if (!loginDataAccess.verifyCredentials(user)) {
             throw new MessageException("Incorrect credentials.");
         }
     }
