@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import model.LoginBusinessLayer;
 import model.dataccess.LoginDataAccess;
 import model.entities.MessageException;
 import model.entities.User;
@@ -18,105 +20,95 @@ import model.entities.User;
 @SuppressWarnings("serial")
 public class LoginView extends JFrame implements ActionListener {
 
-	private JLabel lblUserName, lblPassword;
-	
-	private JButton buttonSubmit, buttonClean;
+    private JLabel lblUserName, lblPassword;
 
-	private JTextField txtUserName, txtPassword;
+    private JButton buttonSubmit, buttonClean;
 
-	private JPanel panel1, panel2, panel3;
-	
-	public LoginView() {
+    private JTextField txtUserName, txtPassword;
 
-		this.initializeComponents();
+    private JPanel panel1, panel2, panel3;
 
-		this.buildUI();
-	}
+    public LoginView() {
 
-	private void initializeComponents() {
-		
-		this.lblUserName = new JLabel("Username:   ");
-		this.lblPassword = new JLabel("Password:   ");
+        this.initializeComponents();
 
-		this.buttonSubmit = new JButton("Submit");
-		this.buttonSubmit.addActionListener(this);
+        this.buildUI();
+    }
 
-		this.buttonClean = new JButton("Clean");
-		this.buttonClean.addActionListener(this);
+    private void initializeComponents() {
 
-		this.txtUserName = new JTextField(23);
-		this.txtPassword = new JTextField(23);
+        this.lblUserName = new JLabel("Username:   ");
+        this.lblPassword = new JLabel("Password:   ");
 
-		this.panel1 = new JPanel();
-		this.panel1.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.buttonSubmit = new JButton("Submit");
+        this.buttonSubmit.addActionListener(this);
 
-		this.panel2 = new JPanel();
-		this.panel2.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.buttonClean = new JButton("Clean");
+        this.buttonClean.addActionListener(this);
 
-		this.panel3 = new JPanel();
-		this.panel3.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.txtUserName = new JTextField(23);
+        this.txtPassword = new JTextField(23);
 
-	}
+        this.panel1 = new JPanel();
+        this.panel1.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-	private void buildUI() {
+        this.panel2 = new JPanel();
+        this.panel2.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		this.panel1.add(this.lblUserName);
-		this.panel1.add(this.txtUserName);
-		
-		this.panel2.add(this.lblPassword);
-		this.panel2.add(this.txtPassword);
+        this.panel3 = new JPanel();
+        this.panel3.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		this.panel3.add(this.buttonSubmit);
-		this.panel3.add(this.buttonClean);
+    }
 
-		this.getContentPane().add(panel1, BorderLayout.NORTH);
-		this.getContentPane().add(panel2, BorderLayout.CENTER);
-		this.getContentPane().add(panel3, BorderLayout.SOUTH);
+    private void buildUI() {
 
-		this.setTitle("Authentication");
-		this.setBounds(350, 140, 550, 200);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
-		this.setVisible(true);
-	}
+        this.panel1.add(this.lblUserName);
+        this.panel1.add(this.txtUserName);
 
-	public static void main(String[] args) {
-		new LoginView();
-	}
+        this.panel2.add(this.lblPassword);
+        this.panel2.add(this.txtPassword);
 
-	public void actionPerformed(ActionEvent event) {
-		if (event.getSource() == this.buttonSubmit) {
-			try {
-				
-				String userName = txtUserName.getText();
-				String password = txtPassword.getText();
-				
-				if (userName.equals("")) {
-					throw new MessageException("Username not informed.");
-				} else if (password.equals("")) {
-					throw new MessageException("Password not informed.");
-				} 
-				
-				User user = new User(userName, password);
-				
-				if (!(new LoginDataAccess().verifyCredentials(user))) {
-					throw new MessageException("Incorrect credentials.");
-				} else {
-					new LoginSuccessView(txtUserName.getText());
-					dispose();
-				}
-				
-			} catch (MessageException e) {
-				JOptionPane.showMessageDialog (null, e.getMessage());
-			} catch (ClassNotFoundException e) {
-				JOptionPane.showMessageDialog (null, e.getMessage());
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog (null, e.getMessage());
-			}
-		} else {
-			this.txtUserName.setText("");
-			this.txtPassword.setText("");
-		}
-	}
-	
+        this.panel3.add(this.buttonSubmit);
+        this.panel3.add(this.buttonClean);
+
+        this.getContentPane().add(panel1, BorderLayout.NORTH);
+        this.getContentPane().add(panel2, BorderLayout.CENTER);
+        this.getContentPane().add(panel3, BorderLayout.SOUTH);
+
+        this.setTitle("Authentication");
+        this.setBounds(350, 140, 550, 200);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new LoginView();
+    }
+
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == this.buttonSubmit) {
+            try {
+
+                String userName = txtUserName.getText();
+                String password = txtPassword.getText();
+
+                LoginBusinessLayer.loginUser(userName, password);
+
+                new LoginSuccessView(txtUserName.getText());
+                dispose();
+
+            } catch (MessageException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        } else {
+            this.txtUserName.setText("");
+            this.txtPassword.setText("");
+        }
+    }
+
 }
