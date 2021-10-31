@@ -8,9 +8,21 @@ import java.sql.SQLException;
 
 public class LoginBusinessLayer {
 
-    private static final LoginDataAccess loginDataAccess = new LoginDataAccess();
+    private static LoginBusinessLayer instance = null;
+    private final LoginDataAccess loginDataAccess;
 
-    public static void loginUser(String userName, String password)
+    public static LoginBusinessLayer getInstance() {
+        if (instance == null) {
+            instance = new LoginBusinessLayer(new LoginDataAccess());
+        }
+        return instance;
+    }
+
+    private LoginBusinessLayer(LoginDataAccess dataAccess) {
+        this.loginDataAccess = dataAccess;
+    }
+
+    public void loginUser(String userName, String password)
         throws SQLException, ClassNotFoundException {
 
         if (userName.equals("")) {

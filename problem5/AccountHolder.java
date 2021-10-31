@@ -1,4 +1,4 @@
-public class AccountHolder{
+public abstract class AccountHolder{
     protected final int ID;
     protected final String address;
 
