@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.LoginBusinessLayer;
-import model.dataccess.LoginDataAccess;
 import model.entities.MessageException;
-import model.entities.User;
 
 @SuppressWarnings("serial")
 public class LoginControl extends HttpServlet {
