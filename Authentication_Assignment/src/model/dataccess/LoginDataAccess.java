@@ -1,37 +1,34 @@
 package model.dataccess;
-
-import model.entities.User;
-
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import model.entities.User;
 
 public class LoginDataAccess {
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/authentication";
-    private static final String USER = "postgres";
-    private static final String PWD = "123";
+	public Boolean verifyCredentials(User user) throws ClassNotFoundException, SQLException {
 
-    private static final ConnectionFactory connectionFactory = new ConnectionFactory(
-        URL, USER, PWD
-    );
+		final String URL = "jdbc:postgresql://localhost:5432/authentication";
 
-    public Boolean verifyCredentials(User user) throws SQLException, ClassNotFoundException {
+		final String USER = "postgres";
 
-        Connection connection = connectionFactory.makeConnection();
+		final String PWD = "123";
 
-        final PreparedStatement stmt = connection.prepareStatement(
-            "SELECT * FROM users WHERE username=? and password=?");
+		Class.forName("org.postgresql.Driver");
+		Connection conection = DriverManager.getConnection(URL, USER, PWD);
 
-        stmt.setString(1, user.getUserName());
-        stmt.setString(2, user.getPassword());
+		final PreparedStatement stmt = conection.prepareStatement("SELECT * FROM users WHERE username=? and password=?");
 
-        ResultSet rs = stmt.executeQuery();
+		stmt.setString(1, user.getUserName());
+		stmt.setString(2, user.getPassword());
 
-        return rs.next();
+		ResultSet rs = stmt.executeQuery();
 
-    }
+		return rs.next();
+		
+	}
 
 }
 
