@@ -4,16 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import model.dataccess.LoginDataAccess;
+
+import model.dataccess.LoginBusiness;
 import model.entities.MessageException;
-import model.entities.User;
 
 @SuppressWarnings("serial")
 public class LoginView extends JFrame implements ActionListener {
@@ -91,26 +90,12 @@ public class LoginView extends JFrame implements ActionListener {
 				String userName = txtUserName.getText();
 				String password = txtPassword.getText();
 				
-				if (userName.equals("")) {
-					throw new MessageException("Username not informed.");
-				} else if (password.equals("")) {
-					throw new MessageException("Password not informed.");
-				} 
-				
-				User user = new User(userName, password);
-				
-				if (!(new LoginDataAccess().verifyCredentials(user))) {
-					throw new MessageException("Incorrect credentials.");
-				} else {
-					new LoginSuccessView(txtUserName.getText());
-					dispose();
-				}
-				
+				LoginBusiness.getInstance().loginUser(userName, password);
+
+				new LoginSuccessView(txtUserName.getText());
+				dispose();
+
 			} catch (MessageException e) {
-				JOptionPane.showMessageDialog (null, e.getMessage());
-			} catch (ClassNotFoundException e) {
-				JOptionPane.showMessageDialog (null, e.getMessage());
-			} catch (SQLException e) {
 				JOptionPane.showMessageDialog (null, e.getMessage());
 			}
 		} else {
