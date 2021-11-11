@@ -12,7 +12,7 @@
 
 	<body>
 	
-	<form action="login" method="post">
+	<form action="${pageContext.request.contextPath}/login" method="post">
 		<table bgcolor="#00ffff" width="500" height="80" align="center">
 			    <tr>
 			      <td><c:out value="Username: "></c:out></td>

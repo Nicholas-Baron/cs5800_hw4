@@ -1,15 +1,14 @@
 package control;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.dataccess.LoginDataAccess;
+
+import model.dataccess.LoginBusiness;
 import model.entities.MessageException;
-import model.entities.User;
 
 @SuppressWarnings("serial")
 public class LoginControl extends HttpServlet {
@@ -30,20 +29,10 @@ public class LoginControl extends HttpServlet {
 			String userName = request.getParameter("username");
 			String password = request.getParameter("password");
 			
-			if (userName.equals("")) {
-				throw new MessageException("Username not informed.");
-			} else if (password.equals("")) {
-				throw new MessageException("Password not informed.");
-			} 
-			
-			User user = new User(userName, password);
+			new LoginBusiness().loginUser(userName, password);
 				
-			if (!(new LoginDataAccess().verifyCredentials(user))) {
-				throw new MessageException("Incorrect credentials.");
-			} else {
-				request.setAttribute("Username", request.getParameter("username"));
-				address = "/view/LoginSuccessView.jsp";
-			}
+			request.setAttribute("Username", request.getParameter("username"));
+			address = "/view/LoginSuccessView.jsp";
 
 		} catch (MessageException e) {
 			if (e.getMessage().equals("Username not informed.")) {
@@ -56,12 +45,6 @@ public class LoginControl extends HttpServlet {
 				request.setAttribute("ErrorLogin", "Incorrect credentials.");
 				address = "/view/LoginView.jsp";	
 		    }
-		} catch (ClassNotFoundException e) {
-			request.setAttribute("ErrorLogin", "Database connection failed.");
-			address = "/view/LoginView.jsp";
-		} catch (SQLException e) {
-			request.setAttribute("ErrorLogin", "Database connection failed.");
-			address = "/view/LoginView.jsp";
 		}
 		
 	    RequestDispatcher rd = request.getRequestDispatcher(address);
